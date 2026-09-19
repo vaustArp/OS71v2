@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengumuman Open Recruitment</title>
+    <!-- Library untuk Animasi Konfeti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        /* Tema Estetika Langit & Air */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, #59c2ff 0%, #89d4fe 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            color: #2c3e50;
+            overflow: hidden;
+            position: relative;
+            transition: background 0.5s ease;
+        }
+
+        /* --- Animasi Awan dengan Gambar (awan.png) --- */
+        .clouds-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: url('awan.png') no-repeat center center;
+            background-size: cover;
+            transform: scale(1.15);
+            animation: floatClouds 15s ease-in-out infinite alternate;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        @keyframes floatClouds {
+            0% {
+                transform: scale(1.15) translate(-1.5%, -1%);
+            }
+
+            100% {
+                transform: scale(1.15) translate(1.5%, 1%);
+            }
+        }
+
+        /* --- Animasi Ombak Air dengan Gambar --- */
+        .waves-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 22vh;
+            min-height: 120px;
+            max-height: 250px;
+            z-index: 1;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .wave-layer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('air.png') repeat-x bottom left;
+        }
+
+        .wave-layer.back {
+            opacity: 0.6;
+            background-size: 1400px 100%;
+            animation: moveWaterBack 25s linear infinite;
+        }
+
+        .wave-layer.front {
+            opacity: 1;
+            background-size: 1800px 100%;
+            animation: moveWaterFront 15s linear infinite;
+        }
+
+        @keyframes moveWaterFront {
+            from {
+                background-position-x: 0;
+            }
+
+            to {
+                background-position-x: -1800px;
+            }
+        }
+
+        @keyframes moveWaterBack {
+            from {
+                background-position-x: 0;
+            }
+
+            to {
+                background-position-x: -1400px;
+            }
+        }
+
+        /* --- Animasi Bebek --- */
+        .duck-float {
+            position: absolute;
+            width: 250px;
+            animation: swimDuck 25s linear infinite, bobDuck 2.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes swimDuck {
+            0% {
+                left: 110%;
+            }
+
+            100% {
+                left: -30%;
+            }
+        }
+
+        @keyframes bobDuck {
+            0% {
+                bottom: 23px;
+                transform: scaleX(-1) rotate(-4deg);
+            }
+
+            100% {
+                bottom: 40px;
+                transform: scaleX(-1) rotate(4deg);
+            }
+        }
+
+        /* --- Card Container --- */
+        .card-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 480px;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 50px 35px 40px;
+            border-radius: 12px;
+            border: 6px solid #00BFA6;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            /* Animasi Masuk */
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Hover efek pada card form agar interaktif */
+        #form-card {
+            animation: melayang 5s ease-in-out infinite;
+        }
+
+        @keyframes melayang {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        .ribbon {
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-1deg);
+            padding: 10px 30px;
+            font-size: 22px;
+            font-weight: 900;
+            border-radius: 6px;
+            white-space: nowrap;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            color: #ffffff;
+            z-index: 11;
+            /* Animasi drop-down untuk result */
+            opacity: 0;
+            animation: dropRibbon 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation-delay: 0.1s;
+        }
+
+        /* Varian Warna Ribbon */
+        .ribbon-form {
+            background: #FF5B60;
+            opacity: 1;
+            animation: none;
+        }
+
+        .ribbon-success {
+            background: #40B138;
+            transform: translateX(-50%) rotate(-1.5deg);
+        }
+
+        .ribbon-error {
+            background: #F05151;
+            transform: translateX(-50%) rotate(-1deg);
+        }
+
+        .origami-star {
+            position: absolute;
+            width: 140px;
+            z-index: 12;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.2));
+            /* Animasi berputar dan melayang */
+            animation: starFloat 6s ease-in-out infinite;
+        }
+
+        .star-form {
+            bottom: -40px;
+            right: -40px;
+        }
+
+        .star-result {
+            top: -50px;
+            right: -50px;
+            width: 130px;
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(30px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes dropRibbon {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-40px) rotate(-5deg);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0) rotate(-1.5deg);
+            }
+        }
+
+        @keyframes starFloat {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(5deg);
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(-5deg);
+            }
+        }
+
+        /* --- Form Elements --- */
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background: #A8E0CE;
+            color: #2c3e50;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .input-group input::placeholder {
+            color: #6daea1;
+            font-weight: normal;
+        }
+
+        .input-group input:focus {
+            outline: 2px solid #00BFA6;
+            box-shadow: 0 0 10px rgba(0, 191, 166, 0.3);
+            background: #b5e8d8;
+        }
+
+        button.btn-primary {
+            width: auto;
+            min-width: 220px;
+            padding: 14px 30px;
+            background: #FF5B60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        button.btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 91, 96, 0.4);
+        }
+
+        /* Spinner Loading */
+        .loader {
+            display: none;
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 191, 166, 0.2);
+            border-top-color: #00BFA6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* --- Typography & Style Result Page --- */
+        .msg-text {
+            font-size: 21px;
+            font-weight: 800;
+            color: #555555;
+            margin: 20px 0;
+            line-height: 1.4;
+        }
+
+        .msg-subtext {
+            font-size: 18px;
+            font-weight: 800;
+            color: #666666;
+            margin-bottom: 20px;
+        }
+
+        /* --- WhatsApp UI --- */
+        .wa-container {
+            margin-top: 35px;
+        }
+
+        .wa-text {
+            font-size: 15px;
+            font-weight: bold;
+            color: #555555;
+            margin-bottom: 12px;
+        }
+
+        .wa-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background-color: #51B848;
+            color: white;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: 800;
+            padding: 14px 28px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(81, 184, 72, 0.3);
+            transition: all 0.3s;
+            /* Animasi pulse agar mengundang klik */
+            animation: pulseBtn 2s infinite;
+        }
+
+        .wa-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(81, 184, 72, 0.4);
+            animation: none;
+            /* stop pulse saat hover */
+        }
+
+        @keyframes pulseBtn {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 5px 15px rgba(81, 184, 72, 0.3);
+            }
+
+            50% {
+                transform: scale(1.03);
+                box-shadow: 0 8px 20px rgba(81, 184, 72, 0.5);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 5px 15px rgba(81, 184, 72, 0.3);
+            }
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            font-size: 15px;
+            padding: 12px 30px;
+            background: #e0e0e0;
+            color: #555555;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #cccccc;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Animasi Awan Latar Belakang -->
+    <div class="clouds-container" id="clouds-bg"></div>
+
+    <!-- Animasi Ombak Latar Belakang -->
+    <div class="waves-container" id="waves-bg">
+        <div class="wave-layer back"></div>
+        <img src="bebek.png" class="duck-float" alt="Bebek" onerror="this.style.display='none'">
+        <div class="wave-layer front"></div>
+    </div>
+
+    <div class="card-wrapper">
+
+        <!-- CARD FORM -->
+        <div class="card" id="form-card">
+            <!-- Ribbon Title -->
+            <div class="ribbon ribbon-form">Input Your NRP and Email</div>
+
+            <img src="origami-star.png" alt="Star" class="origami-star star-form" onerror="this.style.display='none'">
+
+            <!-- FORM CONTENT -->
+            <div id="form-content">
+                <div class="input-group" style="margin-top: 30px;">
+                    <input type="text" id="nrp" placeholder="Student ID Number" autocomplete="off" required>
+                </div>
+                <div class="input-group">
+                    <input type="email" id="email" placeholder="Email" autocomplete="off" required>
+                </div>
+
+                <button class="btn-primary" onclick="mulaiCek()">Check Result!</button>
+                <div id="pesan-error" style="color: #FF5B60; font-size: 14px; font-weight: bold; margin-top: 15px;">
+                </div>
+            </div>
+
+            <!-- LOADING -->
+            <div id="loading-section" style="display: none; padding: 20px 0;">
+                <h2 style="color: #00BFA6;">Memproses...</h2>
+                <div class="loader" style="display: block;"></div>
+            </div>
+        </div>
+
+        <!-- CARD RESULT -->
+        <div class="card" id="result-card" style="display: none;">
+            <div id="result-ribbon" class="ribbon"></div>
+
+            <img src="origami-star.png" alt="Star" class="origami-star star-result" onerror="this.style.display='none'">
+
+            <div id="result-message-container" style="margin-top: 25px;">
+                <!-- Dipesan lewat JS -->
+            </div>
+
+            <div id="wa-container" class="wa-container" style="display: none;">
+                <div class="wa-text">Join this WhatsApp Group to get more information!</div>
+                <a href="https://its.id/m/tesGrup" target="_blank" class="wa-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white">
+                        <path
+                            d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 3.825.001 6.938 3.113 6.939 6.939-.001 3.825-3.114 6.937-6.939 6.941z" />
+                    </svg>
+                    https://its.id/m/tesGrup
+                </a>
+            </div>
+
+            <button class="back-btn" onclick="location.reload()">Kembali</button>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwIdaRy1j4DWjp7g-UNlz9iCIOx9ekOLnLd4ONIXf0h8t-KTkO0Fb-vG8UoLOKs3oBC/exec';
+
+        async function mulaiCek() {
+            const nrp = document.getElementById('nrp').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const pesanError = document.getElementById('pesan-error');
+
+            if (!nrp || !email) {
+                pesanError.innerText = "Please enter Student ID and Email!";
+                return;
+            }
+            pesanError.innerText = "";
+
+            document.getElementById('form-content').style.display = 'none';
+            document.getElementById('loading-section').style.display = 'block';
+
+            const urlTujuan = `${SCRIPT_URL}?nrp=${encodeURIComponent(nrp)}&email=${encodeURIComponent(email)}`;
+            ambilDataDenganRetry(urlTujuan, 3);
+        }
+
+        async function ambilDataDenganRetry(url, sisaPercobaan) {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                tampilkanHasil(data);
+            } catch (error) {
+                if (sisaPercobaan > 0) {
+                    setTimeout(() => ambilDataDenganRetry(url, sisaPercobaan - 1), 2000);
+                } else {
+                    document.getElementById('loading-section').style.display = 'none';
+                    document.getElementById('form-content').style.display = 'block';
+                    document.getElementById('pesan-error').innerText = "Connection lost. Please try again.";
+                }
+            }
+        }
+
+        function tampilkanHasil(data) {
+            // Sembunyikan form card
+            document.getElementById('form-card').style.display = 'none';
+
+            // Sembunyikan background awan dan ombak
+            document.getElementById('clouds-bg').style.opacity = '0';
+            document.getElementById('waves-bg').style.opacity = '0';
+
+            // Ubah background body ke background.png
+            document.body.style.background = "url('background.png') no-repeat center center fixed";
+            document.body.style.backgroundSize = "cover";
+
+            // Tampilkan result card
+            const resultCard = document.getElementById('result-card');
+            resultCard.style.display = 'block';
+
+            // Reset dan re-trigger animasi masuk untuk result card
+            resultCard.style.animation = 'none';
+            void resultCard.offsetWidth; // trigger reflow
+            resultCard.style.animation = 'popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+
+            const ribbon = document.getElementById('result-ribbon');
+            const msgContainer = document.getElementById('result-message-container');
+            const waContainer = document.getElementById('wa-container');
+
+            // Reset state ribbon
+            ribbon.className = 'ribbon';
+            msgContainer.innerHTML = '';
+            waContainer.style.display = 'none';
+
+            if (data.ditemukan) {
+                if (data.status.toLowerCase().includes("lolos") && !data.status.toLowerCase().includes("tidak")) {
+                    // LOLOS
+                    ribbon.innerText = "Congratulation!";
+                    ribbon.classList.add('ribbon-success');
+
+                    msgContainer.innerHTML = `
+                        <div class="msg-text">You've made it through the Document<br>Selection stage. Get ready for the<br>next step and see you soon!</div>
+                    `;
+                    waContainer.style.display = 'block';
+
+                    // Panggil animasi konfeti
+                    confetti({
+                        particleCount: 150,
+                        spread: 80,
+                        origin: { y: 0.6 },
+                        colors: ['#00BFA6', '#00cec9', '#59c2ff', '#fdcb6e', '#51B848']
+                    });
+
+                } else {
+                    // GAGAL
+                    ribbon.innerText = "We are sorry";
+                    ribbon.classList.add('ribbon-error');
+
+                    msgContainer.innerHTML = `
+                        <div class="msg-text">Thank you for participating in the S17 Volunteer Open Recruitment.</div>
+                        <div class="msg-subtext">Unfortunately, you were not selected to proceed to the CBT Test stage. Keep pursuing your goals and embracing new opportunities. Wishing you all the best on your journey ahead!</div>
+                    `;
+                }
+            } else {
+                // TIDAK DITEMUKAN (Edge Case)
+                ribbon.innerText = "Data Not Found";
+                ribbon.classList.add('ribbon-error');
+
+                msgContainer.innerHTML = `
+                    <div class="msg-text">Student ID or Email is incorrect.</div>
+                    <div class="msg-subtext">Please make sure you typed it correctly<br>as registered.</div>
+                `;
+            }
+        }
+    </script>
+</body>
+
+</html>
