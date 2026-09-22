@@ -600,8 +600,8 @@
             msgContainer.innerHTML = '';
             waContainer.style.display = 'none';
 
-            if (data.ditemukan) {
-                if (data.status.toLowerCase().includes("lolos") && !data.status.toLowerCase().includes("tidak")) {
+            if (data.result === "success") {
+                if (data.data.status.toLowerCase().includes("lolos") && !data.data.status.toLowerCase().includes("tidak")) {
                     // LOLOS
                     ribbon.innerText = "Congratulation!";
                     ribbon.classList.add('ribbon-success');
